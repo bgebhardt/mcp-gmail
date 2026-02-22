@@ -330,12 +330,13 @@ def mark_message_read(message_id: str) -> str:
         Confirmation message
     """
     # Remove the UNREAD label
-    result = modify_message_labels(
+    modify_message_labels(
         service, user_id=settings.user_id, message_id=message_id, remove_labels=["UNREAD"], add_labels=[]
     )
 
-    # Get message details to show what was modified
-    headers = get_headers_dict(result)
+    # Get message details to show what was modified (modify returns minimal response without payload)
+    full_message = get_message(service, message_id, user_id=settings.user_id)
+    headers = get_headers_dict(full_message)
     subject = headers.get("Subject", "No Subject")
 
     return f"""
@@ -358,12 +359,13 @@ def add_label_to_message(message_id: str, label_id: str) -> str:
         Confirmation message
     """
     # Add the specified label
-    result = modify_message_labels(
+    modify_message_labels(
         service, user_id=settings.user_id, message_id=message_id, remove_labels=[], add_labels=[label_id]
     )
 
-    # Get message details to show what was modified
-    headers = get_headers_dict(result)
+    # Get message details to show what was modified (modify returns minimal response without payload)
+    full_message = get_message(service, message_id, user_id=settings.user_id)
+    headers = get_headers_dict(full_message)
     subject = headers.get("Subject", "No Subject")
 
     # Get the label name for the confirmation message
@@ -403,12 +405,13 @@ def remove_label_from_message(message_id: str, label_id: str) -> str:
             break
 
     # Remove the specified label
-    result = modify_message_labels(
+    modify_message_labels(
         service, user_id=settings.user_id, message_id=message_id, remove_labels=[label_id], add_labels=[]
     )
 
-    # Get message details to show what was modified
-    headers = get_headers_dict(result)
+    # Get message details to show what was modified (modify returns minimal response without payload)
+    full_message = get_message(service, message_id, user_id=settings.user_id)
+    headers = get_headers_dict(full_message)
     subject = headers.get("Subject", "No Subject")
 
     return f"""
